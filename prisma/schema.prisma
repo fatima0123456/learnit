@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String     
+  createdAt DateTime @default(now())
+
+  courses          Course[]      @relation("InstructorCourses") // Courses they created
+  enrollments      Enrollment[]
+  groupMemberships GroupMember[] // ✅ Added to fix missing relation
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  duration    String
+
+  instructor   User   @relation("InstructorCourses", fields: [instructorId], references: [id])
+  instructorId String
+
+  lessons      Lesson[]
+  enrollments  Enrollment[]
+  practiceSets PracticeSet[] // ✅ Added to fix missing relation
+}
+
+model Lesson {
+  id       String @id @default(uuid())
+  title    String
+  content  String
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+}
+
+model PracticeSet {
+  id        String     @id @default(uuid())
+  title     String
+  courseId  String?
+  course    Course?    @relation(fields: [courseId], references: [id]) // ✅ Fixed
+  questions Question[]
+}
+
+model Question {
+  id            String      @id @default(uuid())
+  text          String
+  options       String[] // ["A", "B", "C", "D"]
+  correctAnswer String
+  practiceSet   PracticeSet @relation(fields: [practiceSetId], references: [id])
+  practiceSetId String
+}
+
+model Group {
+  id      String        @id @default(uuid())
+  name    String
+  members GroupMember[]
+}
+
+model GroupMember {
+  id      String @id @default(uuid())
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+  user    User   @relation(fields: [userId], references: [id]) // ✅ Fixed
+  userId  String
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  USER // ✅ Merged enums; use USER or STUDENT, not both
+}

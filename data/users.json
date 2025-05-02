@@ -1,0 +1,27 @@
+[
+  {
+    "id": "3f943c9b-fe79-4fd3-b216-8236ff816cb5",
+    "name": "Sami Syed",
+    "email": "xyedsami135@gmail.com",
+    "password": "asdfghjkl",
+    "role": "user",
+    "createdAt": "2025-04-29T17:07:52.073Z"
+  },
+  {
+    "id": "a07987ca-900b-4f04-bd8a-ac92c982cba5",
+    "name": "Admin User",
+    "email": "admin@learnit.com",
+    "password": "admin123",
+    "role": "user",
+    "createdAt": "2025-04-29T17:40:05.235Z"
+  },
+  {
+    "id": "9852af69-4cd4-4202-8f2f-ade11039f42a",
+    "name": "Student One",
+    "email": "student@learnit.com",
+    "password": "student12",
+    "role": "user",
+    "createdAt": "2025-05-01T10:37:07.044Z"
+  }
+  
+]

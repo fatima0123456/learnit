@@ -1,0 +1,111 @@
+[
+    {
+      "id": "intro-to-javaScript",
+      "title": "Intro to JavaScript",
+      "description": "Learn the basics of JavaScript, the language of the web.",
+      "imageUrl": "/Images/Intro to js.png",
+      "instructor": "Alice Johnson",
+      "duration": "4 weeks",
+      "studentsEnrolled": 1200
+    },
+    {
+      "id": "mastering-react",
+      "title": "Mastering React",
+      "description": "Dive deep into building dynamic user interfaces with React.",
+      "imageUrl": "/Images/Mastering react.png",
+      "instructor": "Bob Smith",
+      "duration": "6 weeks",
+      "studentsEnrolled": 980
+    },
+    {
+      "id": "next.js-crash-course",
+      "title": "Next.js Crash Course",
+      "description": "Build full-stack apps with Next.js, the React framework.",
+      "imageUrl": "/Images/Nextjs CC.jpeg",
+      "instructor": "Carol Lee",
+      "duration": "3 weeks",
+      "studentsEnrolled": 760
+    },
+    {
+      "id": "advanced-python",
+      "title": "Advanced Python",
+      "description": "Deep dive into advanced Python features for efficient programming.",
+      "imageUrl": "/Images/2.png",
+      "instructor": "David Kim",
+      "duration": "5 weeks",
+      "studentsEnrolled": 670
+    },
+    {
+      "id": "javascript-for-web-development",
+      "title": "JavaScript for Web Development",
+      "description": "Build dynamic web pages with JavaScript.",
+      "imageUrl": "/Images/JS.png",
+      "instructor": "Emma Davis",
+      "duration": "4 weeks",
+      "studentsEnrolled": 1500
+    },
+    {
+      "id": "ux-design-fundamentals",
+      "title": "UX Design Fundamentals",
+      "description": "Learn how to design user-friendly digital products.",
+      "imageUrl": "/Images/UX.png",
+      "instructor": "Frank Moore",
+      "duration": "2 weeks",
+      "studentsEnrolled": 820
+    },
+    {
+      "id": "ui-animation-principles",
+      "title": "UI Animation Principles",
+      "description": "Master UI animation principles to enhance user experience and engagement.",
+      "imageUrl": "/Images/UI.png",
+      "instructor": "Alice",
+      "duration": "3 weeks",
+      "studentsEnrolled": 210
+    },
+    {
+      "id": "product-strategy-and-planning",
+      "title": "Product Strategy and Planning",
+      "description": "Develop effective product strategies and planning techniques to drive market success.",
+      "imageUrl": "/Images/PSP.png",
+      "instructor": "Emma",
+      "duration": "2 weeks",
+      "studentsEnrolled": 150
+    },
+    {
+      "id": "data-science",
+      "title": "Data Science",
+      "description": "Learn to analyze data and apply machine learning for actionable insights.",
+      "imageUrl": "/Images/DS.jpg",
+      "instructor": "William",
+      "duration": "4 weeks",
+      "studentsEnrolled": 100
+    },
+    {
+      "id": "digital-marketing",
+      "title": "Digital Marketing",
+      "description": "Master online strategies to promote brands and engage customers effectively.",
+      "imageUrl": "/Images/DM.jpeg",
+      "instructor": "Charles",
+      "duration": "2 weeks",
+      "studentsEnrolled": 80
+    },
+    {
+      "id": "cybersecurity",
+      "title": "Cybersecurity",
+      "description": "Learn to protect systems and data from cyber threats and vulnerabilities.",
+      "imageUrl": "/Images/cybersecurity.jpg",
+      "instructor": "James",
+      "duration": "5 weeks",
+      "studentsEnrolled": 50
+    },
+    {
+      "id": "artificial-intelligence",
+      "title": "Artificial Intelligence",
+      "description": "Explore algorithms and techniques to create intelligent systems that learn and adapt.",
+      "imageUrl": "/Images/AI.jpg",
+      "instructor": "Henry",
+      "duration": "3 weeks",
+      "studentsEnrolled": 120
+    }
+  ]
+  
