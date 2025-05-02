@@ -112,7 +112,7 @@ export default async function ProfilePage() {
                   className="rounded-lg"
                 />
                 <p className="font-bold mt-2">{course.title}</p>
-                <p className="text-sm">{course.duration}</p>
+                <p className="text-sm">{course.}</p>
                 <Link
                   href={`/profile/enrolled-courses/${course.id}`}
                   className="inline-block mt-4 text-blue-600 hover:underline text-sm"
