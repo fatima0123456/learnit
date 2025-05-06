@@ -10,103 +10,85 @@ type Course = {
   id: string;
   title: string;
   description: string;
+  imageUrl: string;
+  instructor: string;
+  duration: string;
+  studentsEnrolled: number;
 };
 
-const mockCourses: Course[] = [
-  {
-    id: "intro-to-javascript",
-    title: "Intro to JavaScript",
-    description: "Learn the basics of JavaScript, the language of the web.",
-  },
-  {
-    id: "mastering-react",
-    title: "Mastering React",
-    description: "Dive deep into building dynamic user interfaces with React.",
-  },
-  {
-    id: "next.js-crash-course",
-    title: "Next.js Crash Course",
-    description: "Build full-stack apps with Next.js, the React framework.",
-  },
-  {
-    id: "advanced-python",
-    title: "Advanced Python",
-    description: "Deep dive into advanced Python features for efficient programming.",
-  },
-  {
-    id: "javascript-for-web-development",
-    title: "JavaScript for Web Development",
-    description: "Build dynamic web pages with JavaScript.",
-  },
-  {
-    id: "ux-design-fundamentals",
-    title: "UX Design Fundamentals",
-    description: "Learn how to design user-friendly digital products.",
-  },
-  {
-    id: "ui-animation-principles",
-    title: "UI Animation Principles",
-    description: "Master UI animation principles to enhance user experience and engagement.",
-  },
-  {
-    id: "product-strategy-and-planning",
-    title: "Product Strategy and Planning",
-    description: "Develop effective product strategies and planning techniques to drive market success.",
-  },
-  {
-    id: "data-science",
-    title: "Data Science",
-    description: "Learn to analyze data and apply machine learning for actionable insights.",
-
-  },
-  {
-    id: "digital-marketing",
-    title: "Digital Marketing",
-    description: "Master online strategies to promote brands and engage customers effectively.",
-
-  },
-  {
-    id: "cybersecurity",
-    title: "Cybersecurity",
-    description: "Learn to protect systems and data from cyber threats and vulnerabilities.",
-  },
-  {
-    id: "artificial-intelligence",
-    title: "Artificial Intelligence",
-    description: "Explore algorithms and techniques to create intelligent systems that learn and adapt.",
-  }
-];
-
-const isAdmin = true; // ✅ Replace this with actual admin auth check
+const isAdmin = true; // Replace this with actual admin auth check
 
 export default function AdminCourseDashboard() {
   const router = useRouter();
-  const [courses, setCourses] = useState<Course[]>(mockCourses);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [instructor, setInstructor] = useState("");
+  const [duration, setDuration] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isAdmin) {
       router.push("/unauthorized");
     }
+    fetchCourses();
   }, []);
 
-  const handleCreateCourse = () => {
-    const newCourse: Course = {
-      id: (Math.random() * 100000).toFixed(0),
-      title,
-      description,
-    };
-    setCourses([...courses, newCourse]);
-    setTitle("");
-    setDescription("");
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch("/api/auth/courses");
+      if (response.ok) {
+        const data = await response.json();
+        setCourses(data);
+      } else {
+        console.error("Error fetching courses:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleCreateCourse = async () => {
+    try {
+      const response = await fetch("/api/auth/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          imageUrl,
+          instructor,
+          duration,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setCourses([...courses, data]);
+        setTitle("");
+        setDescription("");
+        setImageUrl("");
+        setInstructor("");
+        setDuration("");
+      } else {
+        console.error("Error creating course:", data.error);
+      }
+    } catch (error) {
+      console.error("Error creating course:", error);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold mb-6">Course Dashboard (Admin)</h1>
 
-      {/* 🔧 Create New Course */}
+      {/* Create New Course */}
       <div className="bg-white p-6 rounded-xl shadow mb-8">
         <h2 className="text-xl font-semibold mb-4">Create New Course</h2>
         <div className="space-y-4">
@@ -120,11 +102,26 @@ export default function AdminCourseDashboard() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          <Input
+            placeholder="Image URL"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+          />
+          <Input
+            placeholder="Instructor"
+            value={instructor}
+            onChange={(e) => setInstructor(e.target.value)}
+          />
+          <Input
+            placeholder="Duration"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          />
           <Button onClick={handleCreateCourse}>Create Course</Button>
         </div>
       </div>
 
-      {/* 📚 Existing Courses */}
+      {/* Existing Courses */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-xl font-semibold mb-4">Manage Courses</h2>
         {courses.length === 0 ? (
