@@ -1,48 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-// GET all users
-export async function GET() {
-  const users = await prisma.user.findMany();
-  return NextResponse.json(users);
-}
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 // POST: Create a new user
 export async function POST(req: NextRequest) {
-  const { name, email, password, role } = await req.json();
   try {
+    const formData = await req.formData();
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const role = formData.get("role") as string;
+    const password = formData.get("password") as string;
+
+    if (!name || !email || !role || !password) {
+      return NextResponse.json({ error: "All fields are required." }, { status: 400 });
+    }
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return NextResponse.json({ error: "User already exists." }, { status: 409 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await prisma.user.create({
-      data: { name, email, password, role },
+      data: {
+        name,
+        email,
+        role,
+        password: hashedPassword,
+      },
     });
-    return NextResponse.json(newUser, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
-  }
-}
 
-// PUT: Update an existing user
-export async function PUT(req: NextRequest) {
-  const { id, name, email, password, role } = await req.json();
-  try {
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: { name, email, password, role },
-    });
-    return NextResponse.json(updatedUser);
+    return NextResponse.json({ message: "User created successfully", user: newUser }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
-  }
-}
-
-// DELETE: Delete a user
-export async function DELETE(req: NextRequest) {
-  const { id } = await req.json();
-  try {
-    await prisma.user.delete({ where: { id } });
-    return NextResponse.json({ message: 'User deleted' });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
+    console.error("Error creating user:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
