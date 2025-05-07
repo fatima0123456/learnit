@@ -1,100 +1,68 @@
-'use client';
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-import { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+export default async function AddUserPage() {
+  const cookieStore = await cookies()
+  const sessionCookie = cookieStore.get("session")?.value
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  password: string;
-}
+  if (!sessionCookie) {
+    redirect("/login")
+  }
 
-export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [form, setForm] = useState<Partial<User>>({});
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  const fetchUsers = async () => {
-    const res = await fetch('/api/users');
-    const data = await res.json();
-    setUsers(data);
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async () => {
-    const method = editingId ? 'PUT' : 'POST';
-    const payload = editingId ? { ...form, id: editingId } : form;
-
-    await fetch('/api/users', {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    setForm({});
-    setEditingId(null);
-    fetchUsers();
-  };
-
-  const handleEdit = (user: User) => {
-    setForm(user);
-    setEditingId(user.id);
-  };
-
-  const handleDelete = async (id: string) => {
-    await fetch('/api/users', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    fetchUsers();
-  };
+  const userData = JSON.parse(sessionCookie)
+  
+  if (userData.role !== "ADMIN") {
+    redirect("/profile")
+  }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Manage Users</h1>
-
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <Input name="name" placeholder="Name" value={form.name || ''} onChange={handleChange} />
-        <Input name="email" placeholder="Email" value={form.email || ''} onChange={handleChange} />
-        <Input name="role" placeholder="Role" value={form.role || ''} onChange={handleChange} />
-        <Input name="password" placeholder="Password" type="password" value={form.password || ''} onChange={handleChange} />
+    <div className="font-sans p-6 max-w-3xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold">Add New User</h1>
       </div>
-      <Button onClick={handleSubmit}>{editingId ? 'Update' : 'Add'} User</Button>
 
-      <table className="w-full mt-8 border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2">Name</th>
-            <th className="p-2">Email</th>
-            <th className="p-2">Role</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id} className="border-t">
-              <td className="p-2">{user.name}</td>
-              <td className="p-2">{user.email}</td>
-              <td className="p-2">{user.role}</td>
-              <td className="p-2 space-x-2">
-                <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>Edit</Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(user.id)}>Delete</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Form */}
+      <form className="space-y-6">
+        {/* Name */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2" htmlFor="name">
+            Name
+          </label>
+          <Input type="text" id="name" placeholder="Enter full name" />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2" htmlFor="email">
+            Email
+          </label>
+          <Input type="email" id="email" placeholder="Enter email address" />
+        </div>
+
+        {/* Role */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2" htmlFor="role">
+            Role
+          </label>
+          <Input type="text" id="role" placeholder="Enter role (e.g., student, admin)" />
+        </div>
+
+        {/* Password */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2" htmlFor="password">
+            Password
+          </label>
+          <Input type="password" id="password" placeholder="Create password" />
+        </div>
+
+        {/* Submit Button */}
+        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+          Add User
+        </Button>
+      </form>
     </div>
-  );
+  )
 }
