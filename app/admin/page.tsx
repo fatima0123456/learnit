@@ -13,6 +13,12 @@ async function getCourses() {
   return data;
 }
 
+ async function getUsers() {
+  const response = await fetch("http://localhost:3000/api/auth/users");
+  const data = await response.json();
+  return data;
+}
+
 export default async function adminPage() {
   const cookieStore = await cookies()
   const sessionCookie = cookieStore.get("session")?.value
@@ -28,13 +34,18 @@ export default async function adminPage() {
   }
 
   const courses = await getCourses();
+  const users = await getUsers();
 
-  const users = [
-    { id: 1, name: 'Molly Brown', lastSeen: '2 days ago', image: '/Images/user1.png' },
-    { id: 2, name: 'John Davis', lastSeen: '4 days ago', image: '/Images/user2.png' },
-    { id: 3, name: 'Lucy Johnson', lastSeen: '6 days ago', image: '/Images/user3.png' },
-    { id: 4, name: 'Bob Smith', lastSeen: '8 days ago', image: '/Images/user4.png' },
-  ]
+  // const courses = await getCourses();
+
+  // const users = [
+  //   { id: 1, name: 'Molly Brown', lastSeen: '2 days ago', image: '/Images/user1.png' },
+  //   { id: 2, name: 'John Davis', lastSeen: '4 days ago', image: '/Images/user2.png' },
+  //   { id: 3, name: 'Lucy Johnson', lastSeen: '6 days ago', image: '/Images/user3.png' },
+  //   { id: 4, name: 'Bob Smith', lastSeen: '8 days ago', image: '/Images/user4.png' },
+  // ]
+
+ 
 
   // const courses = [
   //   { id: 1, title: 'JavaScript for Web Development', lastUpdated: '2 days ago', lessons: '5 lessons', image: '/Images/JS.png' },

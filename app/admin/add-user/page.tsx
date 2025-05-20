@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
-    const res = await fetch('/api/users');
+    const res = await fetch('/api/auth/users');
     const data = await res.json();
     setUsers(data);
   };
@@ -31,20 +31,36 @@ export default function AdminUsersPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
+  try {
     const method = editingId ? 'PUT' : 'POST';
+    const url = editingId ? `/api/auth/users/${editingId}` : '/api/auth/users';
     const payload = editingId ? { ...form, id: editingId } : form;
 
-    await fetch('/api/users', {
+    console.log('Request URL:', url);
+    console.log('Request Method:', method);
+    console.log('Request Payload:', payload);
+
+    const res = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
 
+    // console.log('Response Status:', res.status);
+    console.log('Response Data:', await res.text());
+
+    if (!res.ok) {
+      throw new Error(`Failed to save user (Status ${res.status})`);
+    }
+
     setForm({});
     setEditingId(null);
     fetchUsers();
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const handleEdit = (user: User) => {
     setForm(user);
@@ -52,7 +68,7 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (id: string) => {
-    await fetch('/api/users', {
+    await fetch('/api/auth/users', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
